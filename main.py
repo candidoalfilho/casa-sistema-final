@@ -96,14 +96,16 @@ class Comment(db.Model):
 
 class CreateChildForm(Form):
     name = StringField('Nome')
+    submit = SubmitField('Enviar')
 
 
 class CreateWorkerForm(Form):
     name = StringField('Nome')
+    submit = SubmitField('Enviar')
 
 
 class CreateDonationForm(Form):
-    name = StringField('Nome')
+    donator_name = StringField('Nome do doador')
     amount = StringField('Quantia')
     submit = SubmitField('Enviar')
 
@@ -343,15 +345,17 @@ def add_new_donation():
     form = CreateDonationForm()
     if form.validate_on_submit():
 
-        new_donation = Donation(
-            donator_name=form.name.data,
-            amount = float(form.amount.data)
-        )
-
-
-        db.session.add(new_donation)
-        db.session.commit()
-        return redirect(url_for("donation_list"))
+        try:
+            new_donation = Donation(
+                donator_name=form.name.data,
+                amount=float(form.amount.data)
+            )
+        except Exception:
+            flash("Digite um número correto!")
+        else:
+            db.session.add(new_donation)
+            db.session.commit()
+            return redirect(url_for("donation_list"))
     return render_template("register_donation.html", form=form)
 
 # Deletion
@@ -377,6 +381,49 @@ def delete_donation(donation_id):
     db.session.commit()
     return redirect(url_for('donation_list'))
 
+# Edit
+
+@app.route("/edit-child/<int:child_id>", methods=["GET", "POST"])
+def edit_child(child_id):
+    child = Child.query.get(child_id)
+    edit_form = CreateChildForm(
+        name=child.name,
+    )
+    if edit_form.validate_on_submit():
+        child.name = edit_form.name.data
+        db.session.commit()
+        return redirect(url_for("child_list", child_id=child.id))
+
+    return render_template("register_child.html", form=edit_form, is_edit=True)
+
+
+@app.route("/edit-worker/<int:worker_id>", methods=["GET", "POST"])
+def edit_worker(worker_id):
+    worker = Worker.query.get(worker_id)
+    edit_form = CreateWorkerForm(
+        name=worker.name,
+    )
+    if edit_form.validate_on_submit():
+        worker.name = edit_form.name.data
+        db.session.commit()
+        return redirect(url_for("workers_list", worker_id=worker.id))
+
+    return render_template("register_worker.html", form=edit_form, is_edit=True)
+
+
+@app.route("/edit-donation/<int:donation_id>", methods=["GET", "POST"])
+def edit_donation(donation_id):
+    donation = Donation.query.get(donation_id)
+    edit_form = CreateDonationForm(
+        donator_name=donation.donator_name,
+        amount = donation.amount
+    )
+    if edit_form.validate_on_submit():
+        donation.donator_name = edit_form.donator_name.data
+        db.session.commit()
+        return redirect(url_for("donation_list", donation_id=donation.id))
+
+    return render_template("register_donation.html", form=edit_form, is_edit=True)
 
 
 if __name__ == "__main__":
