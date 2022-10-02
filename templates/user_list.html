@@ -1,0 +1,53 @@
+{% include "header.html" %}
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/backgroundindex.png')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Usuários do Website</h1>
+            <span class="subheading"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="options col-lg-10 col-md-12 mx-auto">
+
+        <ol>
+          {% for user in users %}
+        <li>
+          <div class="post-preview">
+          <a href="">
+            <h2 class="post-title">
+              {{user.name}}
+            </h2>
+          </a>
+          <p class="post-meta">Email:
+            {{user.email}}
+          {% if current_user.id == 1: %}
+            <a href="">✘</a>
+          {% endif %}
+          </p>
+        </div>
+        </li>
+        <hr>
+        {% endfor %}
+        </ol>
+
+
+      </div>
+
+
+      </div>
+    </div>
+  </div>
+  <hr>
+<link href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet">
+{% include "footer.html" %}

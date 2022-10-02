@@ -1,0 +1,98 @@
+{% include "header.html" %}
+<link href="{{ url_for('static', filename='css/clean-blog.min.css')}}" rel="stylesheet">
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/backgroundindex.png')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Casa da Criança com Câncer</h1>
+            <span class="subheading">Desde 1997 acolhendo crianças e adolescentes com muito amor!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+
+
+      <div class="col-lg-10 col-md-12 mx-auto">
+        <h1>A casa</h1>
+        <p>Somos uma ONG destinada ao apoio de crianças que possuem câncer no Estado da Paraíba. </p>
+        <hr>
+      </div>
+
+
+      <div class="col-lg-10 col-md-12 mx-auto">
+        <h1>Como contribuir</h1>
+        <p>Existem diversas formas que você pode ajudar a instituição, dentre essas, por doações em PIX e na conta bancária da instituição, também
+        por meio da doação de itens constados nas necessidades do mês.</p>
+        <hr>
+
+        <div>
+          <h1>Formas de doação</h1>
+
+                    <p>PIX (CNPJ) 02.229.875.0001-95</p>
+                    <p>Ag.3502-5 CC.1583-0</p>
+                    <p>NACC-PB / Banco do Brasil</p>
+        </div>
+
+        <hr>
+
+        <div class="monthly-needs col-lg-8 col-md-12">
+          <h1>Necessidades do mês</h1>
+          <hr style="background-color:white">
+          <ul>
+            <li>Feijão</li>
+            <li>Batata</li>
+            <li>Feijão</li>
+            <li>Batata</li>
+            <li>Feijão</li>
+            <li>Batata</li>
+            <li>Feijão</li>
+            <li>Batata</li>
+          </ul>
+        </div>
+      </div>
+      <div class="news col-lg-10 col-md-12 mx-auto">
+        <h1>Notícias</h1>
+        {% for post in all_posts %}
+        <div class="post-preview">
+          <a href="{{ url_for('show_post', post_id=post.id) }}">
+            <h2 class="post-title">
+              {{post.title}}
+            </h2>
+            <h3 class="post-subtitle">
+              {{post.subtitle}}
+            </h3>
+          </a>
+          <p class="post-meta">Publicado por
+            <a href="#">{{post.author.name}}</a>
+            em {{post.date}}
+          {% if current_user.id == 1: %}
+            <a href="{{url_for('delete_post', post_id=post.id) }}">✘</a>
+          {% endif %}
+          </p>
+        </div>
+        <hr>
+        {% endfor %}
+
+        <!-- New Post -->
+        {% if current_user.id == 1: %}
+        <div class="clearfix">
+          <a class="btn btn-primary float-right" href="{{url_for('add_new_post')}}">Publicar notícia</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <hr>
+
+<link href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet">
+
+{% include "footer.html" %}

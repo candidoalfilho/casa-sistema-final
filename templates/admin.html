@@ -1,0 +1,43 @@
+{% include "header.html" %}
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/backgroundindex.png')}}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Portal da administração</h1>
+            <span class="subheading"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="options col-lg-10 col-md-12 mx-auto">
+
+        <h1> Usuários</h1>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('user_list') }}'";>Consultar</button>
+        <h1> Crianças vinculadas</h1>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('add_new_child') }}'">Criar</button>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('child_list') }}'">Consultar</button>
+        <h1> Funcionários</h1>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('add_new_worker') }}'">Criar</button>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('workers_list') }}'">Consultar</button>
+        <h1> Doações registradas</h1>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('add_new_donation') }}'">Criar</button>
+          <button class="btn btn-primary" onclick="window.location.href='{{ url_for('donation_list') }}'">Consultar</button>
+
+      </div>
+
+
+      </div>
+    </div>
+  </div>
+  <hr>
+<link href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet">
+{% include "footer.html" %}
