@@ -47,7 +47,9 @@ class User(UserMixin, db.Model):
 class Child(UserMixin, db.Model):
     __tablename__ = "institution_children"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(180), nullable=False)
+    parent_name = db.Column(db.String(180), nullable=False)
+    birthdate = db.Column(db.String(250), nullable=False)
 
 
 class Worker(UserMixin, db.Model):
@@ -96,6 +98,8 @@ class Comment(db.Model):
 
 class CreateChildForm(Form):
     name = StringField('Nome')
+    parent_name = StringField('Nome do(a) responsável')
+    birthdate = StringField('Data de nascimento')
     submit = SubmitField('Enviar')
 
 
@@ -115,9 +119,12 @@ db.create_all()
 
 def admin_only(function):
     def authentication(post_id):
-        if current_user and current_user.id == 1:
-            return function(post_id)
-        return abort(403)
+        try:
+            if current_user and current_user.id == 1:
+                return function(post_id)
+            return abort(403)
+        except:
+            return render_template("error_page.html")
 
     authentication.__name__ = function.__name__
     return authentication
@@ -125,9 +132,13 @@ def admin_only(function):
 
 def admin_only_page(function):
     def authentication2():
-        if current_user and current_user.id == 1:
-            return function()
-        return abort(403)
+
+        try:
+            if current_user and current_user.id == 1:
+                return function()
+            return abort(403)
+        except:
+            return render_template("error_page.html")
 
     authentication2.__name__ = function.__name__
     return authentication2
@@ -284,21 +295,22 @@ def admin_page():
 @app.route("/admin/users")
 @admin_only_page
 def user_list():
-    users = User.query.all()
+    users = User.query.order_by(User.name).all()
     return render_template("user_list.html", users=users)
 
 
 @app.route("/admin/children")
 @admin_only_page
 def child_list():
-    children = Child.query.all()
-    return render_template("child_list.html", children=children)
+    children = Child.query.order_by(Child.name).all()
+
+    return render_template("child_list.html", children=children,)
 
 
 @app.route("/admin/workers")
 @admin_only_page
 def workers_list():
-    workers = Worker.query.all()
+    workers = Worker.query.order_by(Worker.name).all()
     return render_template("worker_list.html", workers=workers)
 
 
@@ -315,8 +327,11 @@ def donation_list():
 def add_new_child():
     form = CreateChildForm()
     if form.validate_on_submit():
+
         new_child = Child(
             name=form.name.data,
+            parent_name=form.parent_name.data,
+            birthdate=form.birthdate.data
         )
 
         db.session.add(new_child)
@@ -388,6 +403,7 @@ def edit_child(child_id):
     child = Child.query.get(child_id)
     edit_form = CreateChildForm(
         name=child.name,
+        parent_name=child.parent_name
     )
     if edit_form.validate_on_submit():
         child.name = edit_form.name.data
