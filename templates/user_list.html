@@ -17,7 +17,9 @@
 
   <!-- Main Content -->
   <div class="container">
+    <button class="btn btn-primary" onclick="window.location.href='{{ url_for('admin_page') }}'">Voltar</button>
     <div class="row">
+
       <div class="options col-lg-10 col-md-12 mx-auto">
 
         <ol>
@@ -32,7 +34,8 @@
           <p class="post-meta">Email:
             {{user.email}}
           {% if current_user.id == 1: %}
-            <a href="">✘</a>
+            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('edit_user', user_id=user.id) }}'">Editar</button>
+            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('delete_user', user_id=user.id) }}'">Deletar</button>
           {% endif %}
           </p>
         </div>

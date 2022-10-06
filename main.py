@@ -114,6 +114,11 @@ class CreateDonationForm(Form):
     submit = SubmitField('Enviar')
 
 
+class UserEditForm(Form):
+    name = StringField('Nome')
+    submit = SubmitField('Enviar')
+
+
 db.create_all()
 
 
@@ -375,6 +380,13 @@ def add_new_donation():
 
 # Deletion
 
+@app.route("/delete_user/<int:user_id>")
+def delete_user(user_id):
+    user_to_delete = User.query.get(user_id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    return redirect(url_for('user_list'))
+
 @app.route("/delete_child/<int:child_id>")
 def delete_child(child_id):
     child_to_delete = Child.query.get(child_id)
@@ -397,6 +409,19 @@ def delete_donation(donation_id):
     return redirect(url_for('donation_list'))
 
 # Edit
+
+@app.route("/edit-user/<int:user_id>", methods=["GET", "POST"])
+def edit_user(user_id):
+    user = User.query.get(user_id)
+    edit_form = UserEditForm(
+        name=user.name,
+    )
+    if edit_form.validate_on_submit():
+        user.name = edit_form.name.data
+        db.session.commit()
+        return redirect(url_for("user_list"))
+
+    return render_template("change_user.html", form=edit_form)
 
 @app.route("/edit-child/<int:child_id>", methods=["GET", "POST"])
 def edit_child(child_id):

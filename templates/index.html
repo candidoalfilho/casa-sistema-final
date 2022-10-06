@@ -60,7 +60,13 @@
         </div>
       </div>
       <div class="news col-lg-10 col-md-12 mx-auto">
+
         <h1>Notícias</h1>
+
+        {% if all_posts or current_user.id == 1 %}
+        <h2 style="font-size: 24px; font-weight:500">Ainda não tem notícias</h2>
+        {% endif %}
+
         {% for post in all_posts %}
         <div class="post-preview">
           <a href="{{ url_for('show_post', post_id=post.id) }}">

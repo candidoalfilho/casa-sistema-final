@@ -23,6 +23,9 @@
   </header>
 
   <div class="container">
+
+    <button class="btn btn-primary" onclick="window.location.href='{{ url_for('admin_page') }}'">Voltar</button>
+
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         {{ ckeditor.load() }}
