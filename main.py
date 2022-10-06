@@ -309,7 +309,18 @@ def user_list():
 def child_list():
     children = Child.query.order_by(Child.name).all()
 
-    return render_template("child_list.html", children=children,)
+    age_count = {}
+
+    for child in children:
+        age = 2022 - int(child.birthdate[6:])
+        age_count[age] = age_count.get(age, 0) + 1
+
+    labels = [i for i in age_count.keys()]
+    labels.sort()
+
+    data = [age_count.get(age, 0) for age in labels]
+
+    return render_template("child_list.html", children=children, labels = labels, data = data)
 
 
 @app.route("/admin/workers")
@@ -428,10 +439,13 @@ def edit_child(child_id):
     child = Child.query.get(child_id)
     edit_form = CreateChildForm(
         name=child.name,
-        parent_name=child.parent_name
+        parent_name=child.parent_name,
+        birthdate = child.birthdate
     )
     if edit_form.validate_on_submit():
         child.name = edit_form.name.data
+        child.parent_name = edit_form.parent_name.data
+        child.birthdate = edit_form.birthdate.data
         db.session.commit()
         return redirect(url_for("child_list", child_id=child.id))
 

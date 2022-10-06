@@ -1,4 +1,5 @@
 {% include "header.html" %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Page Header -->
   <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/backgroundindex.png')}}')">
@@ -20,6 +21,9 @@
   <!-- Main Content -->
   <div class="container">
     <button class="btn btn-primary" onclick="window.location.href='{{ url_for('admin_page') }}'">Voltar</button>
+
+
+
     <div class="row">
       <div class="options col-lg-10 col-md-12 mx-auto">
 
@@ -57,4 +61,49 @@
 
 
 <link href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet">
+
+<div style=" width:700px; height:700px; text-align: center;margin-left:100px;">
+  <canvas id="myChart" width="200px" height="200px"></canvas>
+</div>
+
+
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+ctx.canvas.width = 300;
+ctx.canvas.height = 300;
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ labels | safe }},
+        datasets: [{
+            label: 'Número de crianças',
+            data: {{ data | safe }},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
 {% include "footer.html" %}
