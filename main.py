@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
 
-from flask_wtf import Form, validators
+from flask_wtf import Form
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
@@ -119,7 +119,8 @@ class UserEditForm(Form):
     submit = SubmitField('Enviar')
 
 
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 def admin_only(function):
@@ -275,7 +276,6 @@ def edit_post(post_id):
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.author = edit_form.author.data
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
@@ -333,7 +333,7 @@ def workers_list():
 @app.route("/admin/donations")
 @admin_only_page
 def donation_list():
-    donations = Donation.query.all()
+    donations = Donation.query.order_by(Donation.donator_name).all()
     return render_template("donation_list.html", donations=donations)
 
 # Creation
@@ -378,15 +378,15 @@ def add_new_donation():
 
         try:
             new_donation = Donation(
-                donator_name=form.name.data,
+                donator_name = form.donator_name.data,
                 amount=float(form.amount.data)
             )
-        except Exception:
-            flash("Digite um número correto!")
-        else:
             db.session.add(new_donation)
             db.session.commit()
             return redirect(url_for("donation_list"))
+        except Exception:
+            flash("Digite um número correto!")
+
     return render_template("register_donation.html", form=form)
 
 # Deletion

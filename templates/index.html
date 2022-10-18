@@ -50,12 +50,8 @@
           <ul>
             <li>Feijão</li>
             <li>Batata</li>
-            <li>Feijão</li>
-            <li>Batata</li>
-            <li>Feijão</li>
-            <li>Batata</li>
-            <li>Feijão</li>
-            <li>Batata</li>
+            <li>Arroz</li>
+            <li>Fraldas</li>
           </ul>
         </div>
       </div>
@@ -63,9 +59,7 @@
 
         <h1>Notícias</h1>
 
-        {% if all_posts or current_user.id == 1 %}
-        <h2 style="font-size: 24px; font-weight:500">Ainda não tem notícias</h2>
-        {% endif %}
+
 
         {% for post in all_posts %}
         <div class="post-preview">
