@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>Doações</h1>
+            <h1>Necessidades do mês</h1>
             <span class="subheading"></span>
           </div>
         </div>
@@ -19,23 +19,22 @@
   <div class="container">
     <button class="btn btn-primary" onclick="window.location.href='{{ url_for('admin_page') }}'">Voltar</button>
     <div class="row">
+
       <div class="options col-lg-10 col-md-12 mx-auto">
 
         <ol>
-          {% for donation in donations %}
+          {% for need in needs %}
         <li>
           <div class="post-preview">
           <a href="">
             <h2 class="post-title">
-              {{donation.donator_name}}
+              {{need.name}}
             </h2>
           </a>
 
-              <p>R$ {{donation.amount}}</p>
-
           {% if current_user.id == 1: %}
-            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('edit_donation', donation_id=donation.id) }}'">Editar</button>
-            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('delete_donation', donation_id=donation.id) }}'">Deletar</button>
+            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('edit_need', need_id=need.id) }}'">Editar</button>
+            <button class="btn btn-primary" onclick="window.location.href='{{ url_for('delete_need', need_id=need.id) }}'">Deletar</button>
           {% endif %}
 
         </div>

@@ -2,7 +2,7 @@
 <link href="{{ url_for('static', filename='css/clean-blog.min.css')}}" rel="stylesheet">
 
   <!-- Page Header -->
-  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/backgroundindex.png')}}')">
+<header class="masthead" style="background-image: url({{ url_for('static', filename='img/casa-fotos/GilsonLivro.jpeg')}})">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
@@ -20,18 +20,31 @@
   <div class="container">
     <div class="row">
 
-
       <div class="col-lg-10 col-md-12 mx-auto">
         <h1>A casa</h1>
-        <p>Somos uma ONG destinada ao apoio de crianças que possuem câncer no Estado da Paraíba. </p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Somos uma ONG destinada ao apoio de crianças que possuem câncer no Estado da Paraíba
+        fundada em 1997. Nosso objetivo é fornecer suporte a crianças residentes no interior da Paraíba que precisam de serviços de oncologia pediátrica,
+          por meio de serviços como de hospedagem, alimentação, programas educativos, entre outros.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Estamos localizados na Rua Dep. Odon Bezerra 215 (Tambiá), João Pessoa.</p>
+
+        <iframe class="page-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3959.0956279059633!2d-34.8801981!3d-7.114916099999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7ace7e660d84821%3A0xde453dc66fbcd1d8!2sR.%20Dep.%20Odon%20Bezerra%2C%20215%20-%20Tambi%C3%A1%2C%20Jo%C3%A3o%20Pessoa%20-%20PB%2C%2058020-500!5e0!3m2!1spt-BR!2sbr!4v1672083078173!5m2!1spt-BR!2sbr" width="90%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
         <hr>
       </div>
 
 
       <div class="col-lg-10 col-md-12 mx-auto">
         <h1>Como contribuir</h1>
-        <p>Existem diversas formas que você pode ajudar a instituição, dentre essas, por doações em PIX e na conta bancária da instituição, também
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Existem diversas formas que você pode ajudar a instituição, dentre essas, por doações em PIX e na conta bancária da instituição, também
         por meio da doação de itens constados nas necessidades do mês.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;Nossa instituição é amparada pela contribuição de diversas pessoas físicas, Instituições, movimentos sociais e grupos de trabalho de diversas naturezas.
+         Entre em contato com nossos meios de comunicação para contribuir: </p>
+         <ul>
+            <li>Whatsapp: +55 83 8821-5687</li>
+            <li>Instagram: @casadacriancacomcancerpb</li>
+            <li>Facebook: casadacriancacomcancerpb</li>
+            <li>Telefone fixo: (83) 3241-3233</li>
+          </ul>
         <hr>
 
         <div>
@@ -45,54 +58,30 @@
         <hr>
 
         <div class="monthly-needs col-lg-8 col-md-12">
-          <h1>Necessidades do mês</h1>
-          <hr style="background-color:white">
-          <ul>
-            <li>Feijão</li>
-            <li>Batata</li>
-            <li>Arroz</li>
-            <li>Fraldas</li>
+          <h1 style="text-align:center">Necessidades do mês</h1>
+          <hr style="background-color:white; height:1px;opacity:.5;width:40%">
+          <div style="display:flex;justify-content:center;align-items:center;">
+            <div class="needs col col-md-6">
+            <ul>
+              {% for need in needs %}
+              <li>{{ need.name }}</li>
+              {% endfor %}
+
           </ul>
+          </div>
+          <div class="month-year">{{date}}</div>
+          </div>
         </div>
       </div>
-      <div class="news col-lg-10 col-md-12 mx-auto">
-
-        <h1>Notícias</h1>
-
-
-
-        {% for post in all_posts %}
-        <div class="post-preview">
-          <a href="{{ url_for('show_post', post_id=post.id) }}">
-            <h2 class="post-title">
-              {{post.title}}
-            </h2>
-            <h3 class="post-subtitle">
-              {{post.subtitle}}
-            </h3>
-          </a>
-          <p class="post-meta">Publicado por
-            <a href="#">{{post.author.name}}</a>
-            em {{post.date}}
-          {% if current_user.id == 1: %}
-            <a href="{{url_for('delete_post', post_id=post.id) }}">✘</a>
-          {% endif %}
-          </p>
-        </div>
-        <hr>
-        {% endfor %}
-
-        <!-- New Post -->
-        {% if current_user.id == 1: %}
-        <div class="clearfix">
-          <a class="btn btn-primary float-right" href="{{url_for('add_new_post')}}">Publicar notícia</a>
-        </div>
-        {% endif %}
       </div>
+
+
+
+
     </div>
   </div>
   <hr>
 
-<link href="{{ url_for('static', filename='css/index.css')}}" rel="stylesheet">
+
 
 {% include "footer.html" %}

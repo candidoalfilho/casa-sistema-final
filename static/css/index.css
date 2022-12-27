@@ -1,14 +1,32 @@
+h1,h2,h3,h4,h5,p,label,li,div{
+font-family: 'Roboto'!important;
+}
+
+p{
+    line-height:1.75!important;
+    margin-bottom: 10px!important;
+}
+
+.subheading{
+    font-weight: 400;
+}
+
 .monthly-needs{
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     color: white;
     padding: 20px;
-    border-radius: 20px;
-    background-image: linear-gradient(to right, #00b4db, #0083b0);
+    border-radius: 5px;
+
+    margin-left: auto;
+    margin-right: auto;
+    background: rgb(40,31,209);
+background: linear-gradient(90deg, rgba(40,31,209,1) 0%, rgba(0,161,194,1) 100%);
 }
 
 .monthly-needs h1{
     font-size: 25px;
     font-family: 'Arial';
+    font-weight: 600;
 }
 
 .monthly-needs li{
@@ -22,6 +40,42 @@ margin-top:30px;
 .options button{
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.about-photos{
+object-fit:cover;
+height:300px;
+display: inline;
+margin: 20px 0;
+
+}
+
+label{
+    font-weight:400!important;
+}
+
+.page-map{
+    display: flex;
+    margin: 40px auto;
+}
+
+.needs{
+ width:40%!important;
+ display:inline-flex;
+ align-items: center;
+}
+
+.month-year{
+    width: auto;
+    display: inline-flex;
+    float: right;
+    padding: 10px;
+    margin-right: 10%;
+    height: min-content;
+    align-items: center;
+    border: 1px solid rgba(30,144,255,.65);
+    border-radius: 10px;
+    background-color: rgba(30,144,255,.5);
 }
 
 

@@ -3,6 +3,7 @@
 
 <head>
 
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
@@ -13,12 +14,14 @@
   <link rel="icon" href="{{ url_for('static', filename='img/title.jpg')}}">
 
   <!-- Bootstrap core CSS -->
+  <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
   <!-- Custom fonts for this template -->
   <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
   <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/clean-blog.min.css')}}" rel="stylesheet">
@@ -31,7 +34,7 @@
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand" style="font-size:18px" href="{{url_for('get_all_posts')}}">Casa da Criança com Câncer</a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <button style="font-size:15px;" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
@@ -40,20 +43,24 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('get_all_posts') }}">Home</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('projects') }}">Serviços</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('mission') }}">Missão</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('news') }}">Notícias</a>
+          </li>
+
           {% if current_user.is_authenticated and current_user.id == 1: %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('admin_page') }}">Admin</a>
           </li>
           {% endif %}
 
-        {% if not current_user.is_authenticated: %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('register') }}">Registrar</a>
-          </li>
-          {% endif %}
+
           {% if current_user.is_authenticated: %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('logout') }}">Sair</a>

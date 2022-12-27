@@ -41,28 +41,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(250), nullable=False)
 
     posts = relationship("BlogPost", back_populates="author")
-    comments = relationship("Comment", back_populates="author")
-
-
-class Child(UserMixin, db.Model):
-    __tablename__ = "institution_children"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(180), nullable=False)
-    parent_name = db.Column(db.String(180), nullable=False)
-    birthdate = db.Column(db.String(250), nullable=False)
-
-
-class Worker(UserMixin, db.Model):
-    __tablename__ = "institution_workers"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-
-
-class Donation(UserMixin, db.Model):
-    __tablename__ = "donations"
-    id = db.Column(db.Integer, primary_key=True)
-    donator_name = db.Column(db.String(100), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
 
 
 class BlogPost(db.Model):
@@ -72,49 +50,26 @@ class BlogPost(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('blog_users.id'))
     author = relationship("User", back_populates="posts")
 
-    comments = relationship("Comment", back_populates="post")
-
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
-
-class Comment(db.Model):
-    __tablename__ = "comments"
+class MonthlyNeed(UserMixin, db.Model):
+    __tablename__ = "monthly_needs"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(180), nullable=False)
 
-    author_id = db.Column(db.Integer, db.ForeignKey('blog_users.id'))
-    author = relationship("User", back_populates="comments")
-
-    post_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
-    post = relationship("BlogPost", back_populates="comments")
-
-    text = db.Column(db.Text, nullable=False)
 
 # Forms
 
-
-class CreateChildForm(Form):
-    name = StringField('Nome')
-    parent_name = StringField('Nome do(a) responsável')
-    birthdate = StringField('Data de nascimento')
-    submit = SubmitField('Enviar')
-
-
-class CreateWorkerForm(Form):
-    name = StringField('Nome')
-    submit = SubmitField('Enviar')
-
-
-class CreateDonationForm(Form):
-    donator_name = StringField('Nome do doador')
-    amount = StringField('Quantia')
-    submit = SubmitField('Enviar')
-
-
 class UserEditForm(Form):
+    name = StringField('Nome')
+    submit = SubmitField('Enviar')
+
+
+class MonthlyNeedForm(Form):
     name = StringField('Nome')
     submit = SubmitField('Enviar')
 
@@ -123,7 +78,7 @@ with app.app_context():
     db.create_all()
 
 
-def admin_only(function):
+def admin_only_post(function):
     def authentication(post_id):
         try:
             if current_user and current_user.id == 1:
@@ -135,9 +90,34 @@ def admin_only(function):
     authentication.__name__ = function.__name__
     return authentication
 
+def admin_only_need(function):
+    def authentication_need(need_id):
+        try:
+            if current_user and current_user.id == 1:
+                return function(need_id)
+            return abort(403)
+        except:
+            return render_template("error_page.html")
+
+    authentication_need.__name__ = function.__name__
+    return authentication_need
+
 
 def admin_only_page(function):
-    def authentication2():
+    def authentication_(page_id):
+
+        try:
+            if current_user and current_user.id == 1:
+                return function(page_id)
+            return abort(403)
+        except:
+            return render_template("error_page.html")
+
+    authentication_.__name__ = function.__name__
+    return authentication_
+
+def admin_only(function):
+    def authentication_empty():
 
         try:
             if current_user and current_user.id == 1:
@@ -146,8 +126,21 @@ def admin_only_page(function):
         except:
             return render_template("error_page.html")
 
-    authentication2.__name__ = function.__name__
-    return authentication2
+    authentication_empty.__name__ = function.__name__
+    return authentication_empty
+
+def admin_only_user(function):
+    def authentication_user(user_id):
+
+        try:
+            if current_user and current_user.id == 1:
+                return function(user_id)
+            return abort(403)
+        except:
+            return render_template("error_page.html")
+
+    authentication_user.__name__ = function.__name__
+    return authentication_user
 
 
 @login_manager.user_loader
@@ -157,8 +150,8 @@ def load_user(user_id):
 
 @app.route('/')
 def get_all_posts():
-    posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts)
+    needs = MonthlyNeed.query.all()
+    return render_template("index.html", date=date.today().strftime("%m/%Y"), needs= needs)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -182,7 +175,7 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/login_casa_route', methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if request.method == "POST":
@@ -206,44 +199,39 @@ def login():
     return render_template("login.html", form=form)
 
 
-@app.route('/logout')
+@app.route('/logout_casa_route')
 def logout():
     logout_user()
     return redirect(url_for('get_all_posts'))
 
 
-@app.route("/post/<int:post_id>", methods=["GET", "POST"])
+@app.route("/post/<int:post_id>", methods=["GET"])
 def show_post(post_id):
-    form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
-    comments = db.session.query(Comment).filter_by(post_id=post_id)
-    if form.validate_on_submit():
-        if not current_user.is_authenticated:
-            flash("Você precisa fazer login ou se registrar para comentar.")
-            return redirect(url_for("login"))
 
-        new_comment = Comment(
-            text=form.comment_text.data,
-            author_id=current_user.id,
-            post_id=post_id
-        )
-        db.session.add(new_comment)
-        db.session.commit()
-
-    return render_template("post.html", post=requested_post, form=form, comments=comments)
+    return render_template("post.html", post=requested_post)
 
 
-@app.route("/about")
+@app.route("/sobre")
 def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/projetos")
+def projects():
+    return render_template("projects.html")
+
+@app.route("/missao")
+def mission():
+    return render_template("mission.html")
+
+@app.route("/contato")
 def contact():
     return render_template("contact.html")
 
 
 @app.route("/new-post", methods=["GET", "POST"])
+@admin_only
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -253,7 +241,7 @@ def add_new_post():
             body=form.body.data,
             img_url=form.img_url.data,
             author=current_user,
-            date=date.today().strftime("%B %d, %Y")
+            date=date.today().strftime("%d/%m/%Y")
         )
 
         db.session.add(new_post)
@@ -261,9 +249,9 @@ def add_new_post():
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
-
+# OK
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
-@admin_only
+@admin_only_post
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
@@ -282,146 +270,38 @@ def edit_post(post_id):
 
     return render_template("make-post.html", form=edit_form)
 
-
+# OK
 @app.route("/delete/<int:post_id>")
+@admin_only_post
 def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
 
+# OK
 
 @app.route("/admin")
-@admin_only_page
+@admin_only
 def admin_page():
     return render_template("admin.html")
 
+# OK
 
 @app.route("/admin/users")
-@admin_only_page
+@admin_only
 def user_list():
     users = User.query.order_by(User.name).all()
     return render_template("user_list.html", users=users)
 
-
-@app.route("/admin/children")
-@admin_only_page
-def child_list():
-    children = Child.query.order_by(Child.name).all()
-
-    age_count = {}
-
-    for child in children:
-        age = 2022 - int(child.birthdate[6:])
-        age_count[age] = age_count.get(age, 0) + 1
-
-    labels = [i for i in age_count.keys()]
-    labels.sort()
-
-    data = [age_count.get(age, 0) for age in labels]
-
-    return render_template("child_list.html", children=children, labels = labels, data = data)
-
-
-@app.route("/admin/workers")
-@admin_only_page
-def workers_list():
-    workers = Worker.query.order_by(Worker.name).all()
-    return render_template("worker_list.html", workers=workers)
-
-
-@app.route("/admin/donations")
-@admin_only_page
-def donation_list():
-    donations = Donation.query.order_by(Donation.donator_name).all()
-    return render_template("donation_list.html", donations=donations)
-
 # Creation
 
-@app.route("/new-child", methods=["GET", "POST"])
-@admin_only_page
-def add_new_child():
-    form = CreateChildForm()
-    if form.validate_on_submit():
-
-        new_child = Child(
-            name=form.name.data,
-            parent_name=form.parent_name.data,
-            birthdate=form.birthdate.data
-        )
-
-        db.session.add(new_child)
-        db.session.commit()
-        return redirect(url_for("child_list"))
-    return render_template("register_child.html", form=form)
-
-
-@app.route("/new-worker", methods=["GET", "POST"])
-@admin_only_page
-def add_new_worker():
-    form = CreateWorkerForm()
-    if form.validate_on_submit():
-        new_worker = Worker(
-            name=form.name.data,
-        )
-
-        db.session.add(new_worker)
-        db.session.commit()
-        return redirect(url_for("workers_list"))
-    return render_template("register_worker.html", form=form)
-
-@app.route("/new-donation", methods=["GET", "POST"])
-@admin_only_page
-def add_new_donation():
-    form = CreateDonationForm()
-    if form.validate_on_submit():
-
-        try:
-            new_donation = Donation(
-                donator_name = form.donator_name.data,
-                amount=float(form.amount.data)
-            )
-            db.session.add(new_donation)
-            db.session.commit()
-            return redirect(url_for("donation_list"))
-        except Exception:
-            flash("Digite um número correto!")
-
-    return render_template("register_donation.html", form=form)
-
-# Deletion
-
-@app.route("/delete_user/<int:user_id>")
-def delete_user(user_id):
-    user_to_delete = User.query.get(user_id)
-    db.session.delete(user_to_delete)
-    db.session.commit()
-    return redirect(url_for('user_list'))
-
-@app.route("/delete_child/<int:child_id>")
-def delete_child(child_id):
-    child_to_delete = Child.query.get(child_id)
-    db.session.delete(child_to_delete)
-    db.session.commit()
-    return redirect(url_for('child_list'))
-
-@app.route("/delete_worker/<int:worker_id>")
-def delete_worker(worker_id):
-    worker_to_delete = Worker.query.get(worker_id)
-    db.session.delete(worker_to_delete)
-    db.session.commit()
-    return redirect(url_for('workers_list'))
-
-@app.route("/delete_donation/<int:donation_id>")
-def delete_donation(donation_id):
-    donation_to_delete = Donation.query.get(donation_id)
-    db.session.delete(donation_to_delete)
-    db.session.commit()
-    return redirect(url_for('donation_list'))
 
 # Edit
 
+# OK
 @app.route("/edit-user/<int:user_id>", methods=["GET", "POST"])
+@admin_only_user
 def edit_user(user_id):
     user = User.query.get(user_id)
     edit_form = UserEditForm(
@@ -434,51 +314,60 @@ def edit_user(user_id):
 
     return render_template("change_user.html", form=edit_form)
 
-@app.route("/edit-child/<int:child_id>", methods=["GET", "POST"])
-def edit_child(child_id):
-    child = Child.query.get(child_id)
-    edit_form = CreateChildForm(
-        name=child.name,
-        parent_name=child.parent_name,
-        birthdate = child.birthdate
+# OK
+@app.route("/admin/needs")
+@admin_only
+def need_list():
+    needs = MonthlyNeed.query.all()
+    return render_template("need_list.html", needs=needs)
+
+# OK
+@app.route("/add-need", methods=["GET", "POST"])
+@admin_only
+def add_need():
+    form = MonthlyNeedForm()
+    if form.validate_on_submit():
+        new_need = MonthlyNeed(
+            name=form.name.data,
+        )
+
+        db.session.add(new_need)
+        db.session.commit()
+        return redirect(url_for("need_list"))
+    return render_template("register_need.html", form=form)
+
+
+# OK
+@app.route("/add-need/<int:need_id>", methods=["GET", "POST"])
+@admin_only_need
+def edit_need(need_id):
+    need = MonthlyNeed.query.get(need_id)
+    edit_form = MonthlyNeedForm(
+        name=need.name,
+
     )
     if edit_form.validate_on_submit():
-        child.name = edit_form.name.data
-        child.parent_name = edit_form.parent_name.data
-        child.birthdate = edit_form.birthdate.data
+        need.name = edit_form.name.data
         db.session.commit()
-        return redirect(url_for("child_list", child_id=child.id))
+        return redirect(url_for("need_list", need_id=need.id))
 
-    return render_template("register_child.html", form=edit_form, is_edit=True)
-
-
-@app.route("/edit-worker/<int:worker_id>", methods=["GET", "POST"])
-def edit_worker(worker_id):
-    worker = Worker.query.get(worker_id)
-    edit_form = CreateWorkerForm(
-        name=worker.name,
-    )
-    if edit_form.validate_on_submit():
-        worker.name = edit_form.name.data
-        db.session.commit()
-        return redirect(url_for("workers_list", worker_id=worker.id))
-
-    return render_template("register_worker.html", form=edit_form, is_edit=True)
+    return render_template("register_need.html", form=edit_form, is_edit=True)
 
 
-@app.route("/edit-donation/<int:donation_id>", methods=["GET", "POST"])
-def edit_donation(donation_id):
-    donation = Donation.query.get(donation_id)
-    edit_form = CreateDonationForm(
-        donator_name=donation.donator_name,
-        amount = donation.amount
-    )
-    if edit_form.validate_on_submit():
-        donation.donator_name = edit_form.donator_name.data
-        db.session.commit()
-        return redirect(url_for("donation_list", donation_id=donation.id))
+# OK
+@app.route("/delete_need/<int:need_id>")
+@admin_only_need
+def delete_need(need_id):
+    need_to_delete = MonthlyNeed.query.get(need_id)
+    db.session.delete(need_to_delete)
+    db.session.commit()
+    return redirect(url_for('need_list'))
 
-    return render_template("register_donation.html", form=edit_form, is_edit=True)
+# OK
+@app.route("/noticias")
+def news():
+    posts = BlogPost.query.order_by(BlogPost.date).all()[::-1]
+    return render_template("news.html", all_posts=posts)
 
 
 if __name__ == "__main__":
