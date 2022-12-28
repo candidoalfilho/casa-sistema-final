@@ -39,13 +39,31 @@
         por meio da doação de itens constados nas necessidades do mês.</p>
         <p>&nbsp;&nbsp;&nbsp;&nbsp;Nossa instituição é amparada pela contribuição de diversas pessoas físicas, Instituições, movimentos sociais e grupos de trabalho de diversas naturezas.
          Entre em contato com nossos meios de comunicação para contribuir: </p>
-         <ul>
-            <li>Whatsapp: +55 83 8821-5687</li>
-            <li>Instagram: @casadacriancacomcancerpb</li>
-            <li>Facebook: casadacriancacomcancerpb</li>
-            <li>Telefone fixo: (83) 3241-3233</li>
+         <ul class="contact-init" type="none">
+            <li><span class="fa-stack fa-md">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-whatsapp fa-stack-1x fa-inverse"></i>
+                </span>Whatsapp: <a href="https://wa.me/message/25MBNTLCAUKIB1">+55 83 8821-5687</a></li>
+            <li><span class="fa-stack md">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                </span>Instagram: <a href="https://www.instagram.com/casadacriancacomcancerpb/">@casadacriancacomcancerpb</a></li>
+            <li><span class="fa-stack fa-md">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                </span>Facebook: <a href="https://www.facebook.com/casadacriancacomcancerpb/">casadacriancacomcancerpb</a></li>
+            <li><span class="fa-stack md">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-phone-square fa-stack-1x fa-inverse"></i>
+                </span>Telefone fixo: (83) 3241-3233</li>
+             <li><span class="fa-stack md">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-mail-bulk fa-stack-1x fa-inverse"></i>
+                </span>Email: <a href= "mailto:naccpb@terra.com.br" >naccpb@terra.com.br</a></li>
           </ul>
         <hr>
+
+
 
         <div>
           <h1>Formas de doação</h1>
@@ -53,24 +71,29 @@
                     <p>PIX (CNPJ) 02.229.875.0001-95</p>
                     <p>Ag.3502-5 CC.1583-0</p>
                     <p>NACC-PB / Banco do Brasil</p>
+
         </div>
 
         <hr>
 
         <div class="monthly-needs col-lg-8 col-md-12">
-          <h1 style="text-align:center">Necessidades do mês</h1>
+          <h1 style="color:#3B5071;text-align:center">Como posso ajudar a Casa da Criança com Câncer?</h1>
           <hr style="background-color:white; height:1px;opacity:.5;width:40%">
           <div style="display:flex;justify-content:center;align-items:center;">
-            <div class="needs col col-md-6">
-            <ul>
-              {% for need in needs %}
-              <li>{{ need.name }}</li>
-              {% endfor %}
+            <div style="color:#3B5071;" class="needs col col-md-8">
+            <ul type="square">
+
+              <li>Doações financeiras</li>
+                <li>Doações de alimentos</li>
+                <li>Doações de roupas</li>
+                <li>Doações de brinquedos</li>
+                <li>Doação de amor e tempo</li>
+
+
 
           </ul>
           </div>
-          <div class="month-year">{{date}}</div>
-          </div>
+
         </div>
       </div>
       </div>

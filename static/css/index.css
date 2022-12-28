@@ -19,8 +19,8 @@ p{
 
     margin-left: auto;
     margin-right: auto;
-    background: rgb(40,31,209);
-background: linear-gradient(90deg, rgba(40,31,209,1) 0%, rgba(0,161,194,1) 100%);
+    background: rgb(164,162,208);
+    background: linear-gradient(90deg, rgba(164,162,208,1) 0%, rgba(255,255,255,1) 100%)!important;
 }
 
 .monthly-needs h1{
@@ -78,4 +78,38 @@ label{
     background-color: rgba(30,144,255,.5);
 }
 
+.logo-exp {
+border-radius:10px;
+}
+
+.navbar{
+
+}
+
+p{
+    text-align: justify-all;
+}
+
+@media only screen and (max-width: 500px) {
+  .bigger-img {
+    display:none!important;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  .smaller-img {
+    display:none!important;
+  }
+}
+
+.contact-init li{
+    margin-top:10px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .contact-init{
+    padding-left:0!important;
+}
+}
 
