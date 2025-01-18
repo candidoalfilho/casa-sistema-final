@@ -242,6 +242,10 @@ def about():
 def contact():
     return render_template("contact.html")
 
+@app.route("/reports")
+def reports():
+    return redirect("https://drive.google.com/drive/folders/1BAF2wmnKE46DzqSb0qh_TYLaUiJkrjDf?usp=sharing")
+
 
 @app.route("/new-post", methods=["GET", "POST"])
 def add_new_post():
